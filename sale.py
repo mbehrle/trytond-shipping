@@ -151,24 +151,34 @@ class Sale:
         """
         self.__class__.write([self], {
             'lines': [
-                ('create', [{
-                    'type': 'line',
-                    'product': self.carrier.carrier_product.id,
-                    'description': description,
-                    'quantity': 1,  # XXX
-                    'unit': self.carrier.carrier_product.sale_uom.id,
-                    'unit_price': shipment_cost,
-                    'shipment_cost': shipment_cost,
-                    'amount': shipment_cost,
-                    'taxes': [],
-                    'sequence': 9999,  # XXX
-                }]),
+                ('create', [self._get_shipping_line(
+                                shipment_cost, description)]),
                 ('delete', [
                     line for line in self.lines
                     if line.shipment_cost is not None
                 ]),
             ]
         })
+
+    def _get_shipping_line(self, shipment_cost, description):
+        """
+        This method takes shipping_cost and description as arguments and
+        gets the values for a shipping line.
+        :param shipment_cost: The shipment cost calculated according to carrier
+        :param description: Shipping line description
+        """
+        return {
+            'type': 'line',
+            'product': self.carrier.carrier_product.id,
+            'description': description,
+            'quantity': 1,  # XXX
+            'unit': self.carrier.carrier_product.sale_uom.id,
+            'unit_price': shipment_cost,
+            'shipment_cost': shipment_cost,
+            'amount': shipment_cost,
+            'taxes': [],
+            'sequence': 9999,  # XXX
+            }
 
     def _get_carrier_context(self):
         "Pass sale in the context"
