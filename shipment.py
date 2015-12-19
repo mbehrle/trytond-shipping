@@ -3,17 +3,17 @@
     shipment.py
 
 """
-from trytond.model import fields, ModelView
+from trytond.model import fields, ModelView, ModelSQL
 from trytond.pool import PoolMeta, Pool
 from trytond.wizard import Wizard, StateView, Button, StateTransition
-from trytond.pyson import Eval, Or
+from trytond.pyson import Eval, Or, Bool, Id
 from trytond.transaction import Transaction
 
 __metaclass__ = PoolMeta
 __all__ = [
     'ShipmentOut', 'StockMove', 'GenerateShippingLabelMessage',
     'GenerateShippingLabel', 'ShippingCarrierSelector',
-    'ShippingLabelNoModules', 'Package'
+    'ShippingLabelNoModules', 'Package', 'ShipmentBoxTypes'
 ]
 
 STATES = {
@@ -54,6 +54,8 @@ class Package:
         depends=['weight_digits'],
     )
 
+    box_type = fields.Many2One('shipment.box_types', 'Box Types')
+
     @fields.depends('weight_uom')
     def on_change_with_weight_digits(self, name=None):
         if self.weight_uom:
@@ -89,6 +91,8 @@ class Package:
 class ShipmentOut:
     "Shipment Out"
     __name__ = 'stock.shipment.out'
+
+    tracking_url = fields.Char('Tracking Url', readonly=True)
 
     is_international_shipping = fields.Function(
         fields.Boolean("Is International Shipping"),
@@ -227,6 +231,24 @@ class ShipmentOut:
             self.raise_user_error('tracking_number_already_present')
 
         return True
+
+    def _create_default_package(self):
+        """
+        Create a single stock package for the whole shipment
+        """
+        Package = Pool().get('stock.package')
+        ModelData = Pool().get('ir.model.data')
+
+        type_id = ModelData.get_id(
+            "shipping", "shipment_package_type"
+        )
+
+        package, = Package.create([{
+            'shipment': '%s,%d' % (self.__name__, self.id),
+            'type': type_id,
+            'moves': [('add', self.outgoing_moves)],
+        }])
+        return package
 
 
 class StockMove:
@@ -421,7 +443,7 @@ class GenerateShippingLabel(Wizard):
         self.start.shipment = shipment
 
         if not shipment.packages:
-            self._create_shipment_package()
+            self.start.shipment._create_default_package()
 
         if self.start.override_weight:
             # Distribute weight equally
@@ -433,25 +455,6 @@ class GenerateShippingLabel(Wizard):
                 package.save()
 
         return 'no_modules'
-
-    def _create_shipment_package(self):
-        """
-        Create a single stock package for the whole shipment
-        """
-        Package = Pool().get('stock.package')
-        ModelData = Pool().get('ir.model.data')
-
-        shipment = self.start.shipment
-        type_id = ModelData.get_id(
-            "shipping", "shipment_package_type"
-        )
-
-        package, = Package.create([{
-            'shipment': '%s,%d' % (shipment.__name__, shipment.id),
-            'type': type_id,
-            'moves': [('add', shipment.outgoing_moves)],
-        }])
-        return package
 
     def default_generate(self, data):
         shipment = self.update_shipment()
@@ -512,3 +515,23 @@ class GenerateShippingLabel(Wizard):
             )
 
         return getattr(shipment, method_name)()
+
+
+class ShipmentBoxTypes(ModelSQL, ModelView):
+    "Parcel Box Type"
+    __name__ = 'shipment.box_types'
+
+    carrier = fields.Selection([], 'Carrier', required=True)
+    code = fields.Char('Code', required=True)
+    length = fields.Float('Length')
+    width = fields.Float('Width')
+    height = fields.Float('Height')
+    distance_unit = fields.Many2One(
+        'product.uom', 'Distance Unit', states={
+            'required': Or(Bool(Eval('length')), Bool(
+                Eval('width')), Bool(Eval('height')))
+            },
+        domain=[
+            ('category', '=', Id('product', 'uom_cat_length'))
+        ], depends=['length', 'width', 'height']
+    )

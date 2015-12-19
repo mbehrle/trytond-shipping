@@ -12,7 +12,7 @@ from party import (
 )
 from shipment import (
     ShipmentOut, StockMove, GenerateShippingLabelMessage, GenerateShippingLabel,
-    ShippingCarrierSelector, ShippingLabelNoModules, Package
+    ShippingCarrierSelector, ShippingLabelNoModules, Package, ShipmentBoxTypes
 )
 from sale import Sale, SaleLine, ReturnSale
 from configuration import PartyConfiguration
@@ -21,6 +21,7 @@ from log import CarrierLog
 
 def register():
     Pool.register(
+        ShipmentBoxTypes,
         PartyConfiguration,
         Carrier,
         CarrierLog,
