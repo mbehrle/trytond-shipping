@@ -167,6 +167,12 @@ class Sale:
         :param shipment_cost: The shipment cost calculated according to carrier
         :param description: Shipping line description
         """
+        sequence = 9999
+        if self.lines:
+            last_line = self.lines[-1]
+            if last_line.sequence is not None:
+                sequence = last_line.sequence + 1
+
         return {
             'type': 'line',
             'product': self.carrier.carrier_product.id,
@@ -177,7 +183,7 @@ class Sale:
             'shipment_cost': shipment_cost,
             'amount': shipment_cost,
             'taxes': [],
-            'sequence': 9999,  # XXX
+            'sequence': sequence,
             }
 
     def _get_carrier_context(self):
