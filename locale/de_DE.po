@@ -195,10 +195,6 @@ msgctxt "model:ir.ui.menu,name:menu_carrier_configuration"
 msgid "Configuration"
 msgstr "Einstellungen"
 
-msgctxt "model:ir.ui.menu,name:menu_configuration"
-msgid "Configuration"
-msgstr "Einstellungen"
-
 msgctxt "model:shipping.label.end,name:"
 msgid "Generate UPS Labels Message"
 msgstr "Nachricht für UPS-Etikett erstellen"
