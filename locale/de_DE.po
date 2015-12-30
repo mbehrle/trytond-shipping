@@ -1,10 +1,22 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:party.address.validation:"
+msgid "Please fill out the address completely before attempting validation."
+msgstr "Die Adresse muss komplett ausgefüllt sein für die Validierung."
 
 msgctxt "error:sale.line:"
 msgid "Weight is missing on the product %s"
 msgstr "Gewicht fehlt für Artikel %s"
+
+msgctxt "error:sale.sale:"
+msgid "Warehouse address is missing"
+msgstr "Fehlende Warenlageradresse"
+
+msgctxt "error:shipment.box_types:"
+msgid "Box Type with this code already exists."
+msgstr "Ein Behältnistyp mit diesem Code existiert bereits."
 
 msgctxt "error:shipping.label:"
 msgid ""
@@ -15,6 +27,10 @@ msgstr ""
 "erstellt werden"
 
 msgctxt "error:shipping.label:"
+msgid "Shipment %s has no packages"
+msgstr "Lieferposten %s weist keine Packstücke auf."
+
+msgctxt "error:shipping.label:"
 msgid "Tracking Number is already present for this shipment."
 msgstr "Trackingnummer bereits vorhanden für diesen Lieferposten"
 
@@ -23,41 +39,41 @@ msgid "Weight for product %s in stock move is missing"
 msgstr "Gewicht fehlt in der Lagerbewegung für Artikel %s"
 
 msgctxt "error:stock.shipment.out:"
+msgid "Carrier for selected shipment is not of %s"
+msgstr "Der Frachtführer für den ausgewählten Lieferposten ist nicht %s"
+
+msgctxt "error:stock.shipment.out:"
+msgid ""
+"Labels can only be generated when the shipment is in Packed or Done states "
+"only"
+msgstr ""
+"Etiketten können nur für Lieferposten mit Status 'Gepackt' oder 'Erledigt' "
+"erstellt werden"
+
+msgctxt "error:stock.shipment.out:"
+msgid "Shipment %s has no packages"
+msgstr "Lieferposten %s weist keine Packstücke auf."
+
+msgctxt "error:stock.shipment.out:"
 msgid "The wizard can be called on only one shipment"
 msgstr ""
 "Der Assistent kann nur für jeweils einen Lieferposten aufgerufen werden"
 
 msgctxt "error:stock.shipment.out:"
 msgid "There must be atleast one shipment."
-msgstr "Es muss wenigstens einen Lieferposten geben"
+msgstr "Es muss wenigstens einen Lieferposten geben."
 
-msgctxt "field:carrier.configuration,create_date:"
-msgid "Create Date"
-msgstr "Erstellungsdatum"
+msgctxt "error:stock.shipment.out:"
+msgid "Tracking Number is already present for this shipment."
+msgstr "Trackingnummer bereits vorhanden für diesen Lieferposten"
 
-msgctxt "field:carrier.configuration,create_uid:"
-msgid "Create User"
-msgstr "Erstellt durch"
+msgctxt "error:stock.shipment.out:"
+msgid "Warehouse address is missing"
+msgstr "Fehlende Warenlageradresse"
 
-msgctxt "field:carrier.configuration,default_validation_provider:"
-msgid "Default Validation Provider"
-msgstr "Standardbewertung Provider"
-
-msgctxt "field:carrier.configuration,id:"
-msgid "ID"
-msgstr "ID"
-
-msgctxt "field:carrier.configuration,rec_name:"
-msgid "Name"
-msgstr "Name Staat"
-
-msgctxt "field:carrier.configuration,write_date:"
-msgid "Write Date"
-msgstr "Zuletzt geändert"
-
-msgctxt "field:carrier.configuration,write_uid:"
-msgid "Write User"
-msgstr "Letzte Änderung durch"
+msgctxt "field:carrier,currency:"
+msgid "Currency"
+msgstr "Währung"
 
 msgctxt "field:carrier.log,carrier:"
 msgid "Carrier"
@@ -81,7 +97,7 @@ msgstr "Log"
 
 msgctxt "field:carrier.log,rec_name:"
 msgid "Name"
-msgstr "Name Staat"
+msgstr "Name"
 
 msgctxt "field:carrier.log,sale:"
 msgid "Sale"
@@ -99,13 +115,133 @@ msgctxt "field:carrier.log,write_uid:"
 msgid "Write User"
 msgstr "Letzte Änderung durch"
 
+msgctxt "field:party.address.validation.end,done_msg:"
+msgid "Message"
+msgstr "Nachricht"
+
+msgctxt "field:party.address.validation.end,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:party.address.validation.start,city:"
+msgid "Suggested City"
+msgstr "Vorgeschlagene Stadt"
+
+msgctxt "field:party.address.validation.start,country:"
+msgid "Suggested Country"
+msgstr "Vorgeschlagener Staat"
+
+msgctxt "field:party.address.validation.start,current_city:"
+msgid "Current City"
+msgstr "Aktuelle Stadt"
+
+msgctxt "field:party.address.validation.start,current_country:"
+msgid "Current Country"
+msgstr "Aktueller Staat"
+
+msgctxt "field:party.address.validation.start,current_name:"
+msgid "Current Name"
+msgstr "Aktueller Name"
+
+msgctxt "field:party.address.validation.start,current_street:"
+msgid "Current Street"
+msgstr "Aktuelle Straße"
+
+msgctxt "field:party.address.validation.start,current_subdivision:"
+msgid "Current Subdivision"
+msgstr "Aktuelle Subnationale Einheit"
+
+msgctxt "field:party.address.validation.start,current_zip:"
+msgid "Current Zip"
+msgstr "Aktuelle Postleitzahl"
+
+msgctxt "field:party.address.validation.start,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:party.address.validation.start,street:"
+msgid "Suggested Street"
+msgstr "Vorgeschlagene Stadt"
+
+msgctxt "field:party.address.validation.start,subdivision:"
+msgid "Suggested Subdivision"
+msgstr "Vorgeschlagene Subnationale Einheit"
+
+msgctxt "field:party.address.validation.start,zip:"
+msgid "Suggested Zip"
+msgstr "Vorgeschlagene Postleitzahl"
+
+msgctxt "field:party.configuration,default_validation_carrier:"
+msgid "Default Validation Carrier"
+msgstr "Standardvalidierungsfrachtführer"
+
+msgctxt "field:sale.sale,is_international_shipping:"
+msgid "Is International Shipping"
+msgstr "Internationaler Versand"
+
 msgctxt "field:sale.sale,package_weight:"
 msgid "Package weight"
 msgstr "Paketgewicht"
 
+msgctxt "field:sale.sale,total_weight:"
+msgid "Total weight"
+msgstr "Gesamtgewicht"
+
+msgctxt "field:sale.sale,weight_digits:"
+msgid "Weight Digits"
+msgstr "Nachkommastellen Gewicht"
+
 msgctxt "field:sale.sale,weight_uom:"
 msgid "Weight UOM"
 msgstr "Maßeinheit Gewicht"
+
+msgctxt "field:shipment.box_types,code:"
+msgid "Code"
+msgstr "Code"
+
+msgctxt "field:shipment.box_types,create_date:"
+msgid "Create Date"
+msgstr "Erstellungsdatum"
+
+msgctxt "field:shipment.box_types,create_uid:"
+msgid "Create User"
+msgstr "Erstellt durch"
+
+msgctxt "field:shipment.box_types,distance_unit:"
+msgid "Distance Unit"
+msgstr "Entfernungseinheit"
+
+msgctxt "field:shipment.box_types,height:"
+msgid "Height"
+msgstr "Höhe"
+
+msgctxt "field:shipment.box_types,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:shipment.box_types,length:"
+msgid "Length"
+msgstr "Länge"
+
+msgctxt "field:shipment.box_types,provider:"
+msgid "Provider"
+msgstr "Provider"
+
+msgctxt "field:shipment.box_types,rec_name:"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "field:shipment.box_types,width:"
+msgid "Width"
+msgstr "Breite"
+
+msgctxt "field:shipment.box_types,write_date:"
+msgid "Write Date"
+msgstr "Zuletzt geändert"
+
+msgctxt "field:shipment.box_types,write_uid:"
+msgid "Write User"
+msgstr "Letzte Änderung durch"
 
 msgctxt "field:shipping.label.end,attachments:"
 msgid "Attachments"
@@ -147,6 +283,10 @@ msgctxt "field:shipping.label.start,id:"
 msgid "ID"
 msgstr "ID"
 
+msgctxt "field:shipping.label.start,no_of_packages:"
+msgid "Number of packages"
+msgstr "Anzahl Packstücke"
+
 msgctxt "field:shipping.label.start,override_weight:"
 msgid "Override Weight"
 msgstr "Korrekturgewicht"
@@ -155,45 +295,121 @@ msgctxt "field:shipping.label.start,shipment:"
 msgid "Shipment"
 msgstr "Lieferposten"
 
-msgctxt "field:stock.shipment.out,computed_weight:"
+msgctxt "field:shipping.label.start,shipping_instructions:"
+msgid "Shipping Instructions"
+msgstr "Versandanweisungen"
+
+msgctxt "field:stock.package,box_type:"
+msgid "Box Types"
+msgstr "Behältnistypen"
+
+msgctxt "field:stock.package,computed_weight:"
 msgid "Computed Weight"
 msgstr "Berechnetes Gewicht"
 
-msgctxt "field:stock.shipment.out,override_weight:"
+msgctxt "field:stock.package,distance_unit:"
+msgid "Distance Unit"
+msgstr "Entfernungseinheit"
+
+msgctxt "field:stock.package,height:"
+msgid "Height"
+msgstr "Höhe"
+
+msgctxt "field:stock.package,length:"
+msgid "Length"
+msgstr "Länge"
+
+msgctxt "field:stock.package,override_weight:"
 msgid "Override Weight"
 msgstr "Korrekturgewicht"
 
-msgctxt "field:stock.shipment.out,package_weight:"
-msgid "Package weight"
-msgstr "Paketgewicht"
+msgctxt "field:stock.package,tracking_number:"
+msgid "Tracking Number"
+msgstr "Trackingnummer"
+
+msgctxt "field:stock.package,weight:"
+msgid "Weight"
+msgstr "Gewicht"
+
+msgctxt "field:stock.package,weight_digits:"
+msgid "Weight Digits"
+msgstr "Nachkommastellen Gewicht"
+
+msgctxt "field:stock.package,weight_uom:"
+msgid "Weight UOM"
+msgstr "Maßeinheit Gewicht"
+
+msgctxt "field:stock.package,width:"
+msgid "Width"
+msgstr "Breite"
+
+msgctxt "field:stock.shipment.out,is_international_shipping:"
+msgid "Is International Shipping"
+msgstr "Internationaler Versand"
+
+msgctxt "field:stock.shipment.out,shipping_instructions:"
+msgid "Shipping Instructions"
+msgstr "Versandanweisungen"
 
 msgctxt "field:stock.shipment.out,tracking_number:"
 msgid "Tracking Number"
 msgstr "Trackingnummer"
 
+msgctxt "field:stock.shipment.out,tracking_url:"
+msgid "Tracking Url"
+msgstr "Tracking URL"
+
+msgctxt "field:stock.shipment.out,weight:"
+msgid "Weight"
+msgstr "Gewicht"
+
+msgctxt "field:stock.shipment.out,weight_digits:"
+msgid "Weight Digits"
+msgstr "Nachkommastellen Gewicht"
+
 msgctxt "field:stock.shipment.out,weight_uom:"
 msgid "Weight UOM"
 msgstr "Maßeinheit Gewicht"
-
-msgctxt "model:carrier.configuration,name:"
-msgid "Carrier Configuration"
-msgstr "Frachtführer Einstellungen"
 
 msgctxt "model:carrier.log,name:"
 msgid "Carrier Log"
 msgstr "Frachtführer Log"
 
-msgctxt "model:ir.action,name:act_carrier_configuration_form"
+msgctxt "model:ir.action,name:"
 msgid "Configuration"
 msgstr "Einstellungen"
+
+msgctxt "model:ir.action,name:act_box_type_form"
+msgid "Shipping Box Type"
+msgstr "Behältnistyp"
+
+msgctxt "model:ir.action,name:wizard_address_validation"
+msgid "Address Validation"
+msgstr "Adressvalidierung"
 
 msgctxt "model:ir.action,name:wizard_generate_shipping_label"
 msgid "Generate Shipment Label"
 msgstr "Versandetikett erstellen"
 
-msgctxt "model:ir.ui.menu,name:menu_carrier_configuration"
+msgctxt "model:ir.ui.menu,name:"
 msgid "Configuration"
 msgstr "Einstellungen"
+
+msgctxt "model:ir.ui.menu,name:menu_box_type_form"
+msgid "Shipping Box Type"
+msgstr "Behältnistypen"
+
+msgctxt "model:party.address.validation.end,name:"
+msgid "End State for Address Validation"
+msgstr "Endstatus Adressvalidierung"
+
+msgctxt "model:party.address.validation.start,name:"
+msgid "Address Validation Wizard Suggestion View"
+msgstr "Adressvalidierung Vorschlag"
+
+msgctxt "model:shipment.box_types,name:"
+msgid "Parcel Box Type"
+msgstr "Versandbehältnistyp"
 
 msgctxt "model:shipping.label.end,name:"
 msgid "Generate UPS Labels Message"
@@ -207,13 +423,29 @@ msgctxt "model:shipping.label.start,name:"
 msgid "View To Select Carrier"
 msgstr "Frachtführer Auswahl"
 
-msgctxt "view:carrier.configuration:"
-msgid "Carrier Configuration"
-msgstr "Frachtführer Einstellungen"
+msgctxt "view:party.address.validation.end:"
+msgid "Address Validation Complete"
+msgstr "Adressvalidierung Vollständig"
+
+msgctxt "view:party.address.validation.start:"
+msgid "Address Validation Form"
+msgstr "Adressvalidierung Formular"
+
+msgctxt "view:party.address:"
+msgid "Validate Address"
+msgstr "Adresse validieren"
 
 msgctxt "view:sale.sale:"
 msgid "Carrier Details"
 msgstr "Frachtführer Details"
+
+msgctxt "view:shipment.box_types:"
+msgid "Dimensions"
+msgstr "Abmessungen"
+
+msgctxt "view:shipment.box_types:"
+msgid "Shipping Box Type"
+msgstr "Behältnistyp"
 
 msgctxt "view:shipping.label.end:"
 msgid "Shipment Label Generated"
@@ -227,6 +459,26 @@ msgctxt "view:shipping.label.start:"
 msgid "Generate Shipment Label"
 msgstr "Versandetikett erstellen"
 
+msgctxt "view:shipping.label.start:"
+msgid ""
+"If the number of packages is zero, a single new package will automatically "
+"be created for this shipment."
+msgstr ""
+"Wenn die Anzahl an Packstücken Null ist, wird automatisch ein einziges neues"
+" Packstück erstellt."
+
+msgctxt "view:shipping.label.start:"
+msgid "This weight will be equally distributed among all packages."
+msgstr "Dieses Gewicht wird gleichmäßig auf alle Packstücke verteilt."
+
+msgctxt "view:stock.package:"
+msgid "Dimensions"
+msgstr "Abmessungen"
+
+msgctxt "view:stock.package:"
+msgid "Weight Details"
+msgstr "Gewicht Details"
+
 msgctxt "view:stock.shipment.out:"
 msgid "Carrier Details"
 msgstr "Frachtführer Details"
@@ -235,6 +487,26 @@ msgctxt "view:stock.shipment.out:"
 msgid "Generate shipping label"
 msgstr "Versandetikett erstellen"
 
+msgctxt "view:stock.shipment.out:"
+msgid "Packages"
+msgstr "Packstücke"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Shipping Instructions"
+msgstr "Versandanweisungen"
+
+msgctxt "wizard_button:party.address.validation,done,end:"
+msgid "OK"
+msgstr "OK"
+
+msgctxt "wizard_button:party.address.validation,start,end:"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "wizard_button:party.address.validation,start,update:"
+msgid "Save"
+msgstr "Speichern"
+
 msgctxt "wizard_button:shipping.label,generate,end:"
 msgid "Ok"
 msgstr "OK"
@@ -242,6 +514,10 @@ msgstr "OK"
 msgctxt "wizard_button:shipping.label,no_modules,end:"
 msgid "Ok"
 msgstr "OK"
+
+msgctxt "wizard_button:shipping.label,start,end:"
+msgid "Cancel"
+msgstr "Abbrechen"
 
 msgctxt "wizard_button:shipping.label,start,next:"
 msgid "Continue"
