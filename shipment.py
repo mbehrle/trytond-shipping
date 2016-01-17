@@ -13,7 +13,8 @@ __metaclass__ = PoolMeta
 __all__ = [
     'ShipmentOut', 'StockMove', 'GenerateShippingLabelMessage',
     'GenerateShippingLabel', 'ShippingCarrierSelector',
-    'ShippingLabelNoModules', 'Package', 'ShipmentBoxTypes'
+    'ShippingLabelNoModules', 'Package', 'ShipmentBoxTypes',
+    'ShipmentTracking', 'CarrierService'
 ]
 
 STATES = {
@@ -24,7 +25,10 @@ STATES = {
 class Package:
     __name__ = 'stock.package'
 
-    tracking_number = fields.Char('Tracking Number')
+    tracking_number = fields.Function(
+        fields.Many2One('shipment.tracking', 'Tracking Number'),
+        'get_tracking_number', searcher="search_tracking_number"
+    )
 
     weight = fields.Function(
         fields.Float(
@@ -63,11 +67,35 @@ class Package:
         'product.uom', 'Distance Unit', states={
             'required': Or(Bool(Eval('length')), Bool(
                 Eval('width')), Bool(Eval('height')))
-            },
+        },
         domain=[
             ('category', '=', Id('product', 'uom_cat_length'))
         ], depends=['length', 'width', 'height']
     )
+
+    def get_tracking_number(self, name):
+        """
+        Return first tracking number for this package
+        """
+        Tracking = Pool().get('shipment.tracking')
+
+        tracking_numbers = Tracking.search([
+            ('origin', '=', '%s,%s' % (self.__name__, self.id)),
+        ], limit=1)
+
+        return tracking_numbers and tracking_numbers[0].id or None
+
+    @classmethod
+    def search_tracking_number(cls, name, clause):
+        Tracking = Pool().get('shipment.tracking')
+
+        tracking_numbers = Tracking.search([
+            ('origin', 'like', 'stock.package,%'),
+            ('tracking_number', ) + tuple(clause[1:])
+        ])
+        return [
+            ('id', 'in', map(lambda x: x.origin.id, tracking_numbers))
+        ]
 
     @fields.depends('weight_uom')
     def on_change_with_weight_digits(self, name=None):
@@ -107,6 +135,13 @@ class Package:
             'shipping', 'shipment_package_type'
         )
 
+    @staticmethod
+    def default_distance_unit():
+        ModelData = Pool().get('ir.model.data')
+        return ModelData.get_id(
+            'product', 'uom_inch'
+        )
+
 
 class ShipmentOut:
     "Shipment Out"
@@ -134,14 +169,49 @@ class ShipmentOut:
         fields.Integer('Weight Digits'), 'on_change_with_weight_digits'
     )
 
-    tracking_number = fields.Char(
-        'Tracking Number', states=STATES, depends=['state'])
+    tracking_number = fields.Function(
+        fields.Many2One('shipment.tracking', 'Tracking Number'),
+        'get_tracking_number', searcher="search_tracking_number"
+    )
 
     shipping_instructions = fields.Text(
         'Shipping Instructions', states={
             'readonly': Eval('state').in_(['cancel', 'done']),
         }, depends=['state']
     )
+
+    carrier_service = fields.Many2One("carrier.service", "Carrier Service")
+
+    def get_tracking_number(self, name):
+        """
+        Returns master tracking number from package
+        """
+        Tracking = Pool().get('shipment.tracking')
+
+        if not self.packages:
+            return
+
+        tracking_numbers = Tracking.search([
+            ('origin', 'in', [
+                '%s,%d' % (p.__name__, p.id) for p in self.packages
+            ]),
+            ('is_master', '=', True),
+        ], limit=1)
+
+        return tracking_numbers and tracking_numbers[0].id or None
+
+    @classmethod
+    def search_tracking_number(cls, name, clause):
+        Tracking = Pool().get('shipment.tracking')
+
+        tracking_numbers = Tracking.search([
+            ('origin', 'like', 'stock.package,%'),
+            ('is_master', '=', True),
+            ('tracking_number', ) + tuple(clause[1:])
+        ])
+        return [
+            ('id', 'in', set(map(lambda x: x.origin.shipment.id, tracking_numbers)))  # noqa
+        ]
 
     def get_weight(self, name=None):
         """
@@ -167,7 +237,7 @@ class ShipmentOut:
             'label_wizard': {
                 'invisible': Or(
                     (~Eval('state').in_(['packed', 'done'])),
-                    (Eval('tracking_number') != '')
+                    (Bool(Eval('tracking_number')))
                 ),
                 'icon': 'tryton-executable',
             },
@@ -466,7 +536,8 @@ class GenerateShippingLabel(Wizard):
             self.start.shipment._create_default_package()
 
         default_values = self.default_start({})
-        if default_values['override_weight'] != self.start.override_weight:
+        if self.start.override_weight and \
+                default_values['override_weight'] != self.start.override_weight:
             # Distribute weight equally
             per_package_weight = (
                 self.start.override_weight / len(shipment.packages)
@@ -484,7 +555,8 @@ class GenerateShippingLabel(Wizard):
         tracking_number = self.generate_label(shipment)
 
         values = {
-            'tracking_number': tracking_number,
+            'tracking_number':
+                tracking_number and tracking_number.tracking_number,
             'message': self._get_message(),
             'attachments': self.get_attachments(),
             'cost': shipment.cost,
@@ -542,7 +614,8 @@ class ShipmentBoxTypes(ModelSQL, ModelView):
     "Parcel Box Type"
     __name__ = 'shipment.box_types'
 
-    provider = fields.Selection([], 'Provider', required=True)
+    name = fields.Char('Name', required=True)
+    provider = fields.Selection([(None, '')], 'Provider')
     code = fields.Char('Code', required=True)
     length = fields.Float('Length')
     width = fields.Float('Width')
@@ -569,20 +642,143 @@ class ShipmentBoxTypes(ModelSQL, ModelView):
             )
         ]
 
-    def get_rec_name(self, name):
-        """
-        Returns rec name for Box Type
-        """
-        new_rec_name = ' - '.join(
-            [self.provider, ' '.join(self.code.split('_'))]
-        )
 
-        if not (self.length and self.width and self.height):
-            return new_rec_name
+class ShipmentTracking(ModelSQL, ModelView):
+    """Shipment Tracking
+    """
+    __name__ = 'shipment.tracking'
+    _rec_name = 'tracking_number'
 
-        dimensions = ' x '.join(
-            map(str, [self.length, self.width, self.height])
-        )
-        return ' - '.join(
-            [new_rec_name, ' '.join([dimensions, self.distance_unit.symbol])]
-        )
+    is_master = fields.Boolean("Is Master ?", readonly=True, select=True)
+    origin = fields.Reference(
+        'Origin', selection='get_origin', select=True, readonly=True
+    )
+    tracking_number = fields.Char(
+        "Tracking Number", required=True, select=True, readonly=True
+    )
+    carrier = fields.Many2One(
+        'carrier', 'Carrier', required=True, readonly=True
+    )
+    tracking_url = fields.Char("Tracking Url", readonly=True)
+    state = fields.Selection([
+        ('waiting', 'Waiting'),
+        ('in_transit', 'In Transit'),
+        ('delivered', 'Delivered'),
+        ('failure', 'Failure'),
+        ('returned', 'Returned'),
+        ('cancelled', 'Cancelled'),
+        ('pending_cancellation', 'Pending Cancellation'),
+        ], 'State', required=True, select=True)
+
+    @staticmethod
+    def default_state():
+        return 'waiting'
+
+    @classmethod
+    def __setup__(cls):
+        """
+        Setup the class before adding to pool
+        """
+        super(ShipmentTracking, cls).__setup__()
+        cls._buttons.update({
+            'cancel_tracking_number_button': {
+                'invisible': Eval('state') == 'cancelled',
+            },
+        })
+
+    def cancel_tracking_number(self):
+        "Cancel tracking number"
+        self.state = 'cancelled'
+        self.save()
+
+    @classmethod
+    @ModelView.button
+    def cancel_tracking_number_button(cls, tracking_numbers):
+        """
+        Cancel tracking numbers
+        """
+        for tracking_number in tracking_numbers:
+            tracking_number.cancel_tracking_number()
+
+    def refresh_status(self):
+        """
+        Downstream module can implement this
+        """
+        pass
+
+    @classmethod
+    @ModelView.button
+    def refresh_status_button(cls, tracking_numbers):
+        """
+        Update tracking numbers state
+        """
+        for tracking_number in tracking_numbers:
+            tracking_number.refresh_status()
+
+    @classmethod
+    def refresh_tracking_numbers_cron(cls):
+        """
+        This is a cron method, responsible for updating state of
+        shipments.
+        """
+        states_to_refresh = [
+            'pending_cancellation',
+            'failure',
+            'waiting',
+            'in_transit',
+        ]
+
+        tracking_numbers = cls.search([
+            ('state', 'in', states_to_refresh),
+        ])
+        for tracking_number in tracking_numbers:
+            tracking_number.refresh_status()
+
+    @classmethod
+    def _get_origin(cls):
+        'Return list of Model names for origin Reference'
+        return ['stock.shipment.out', 'stock.package']
+
+    @classmethod
+    def get_origin(cls):
+        Model = Pool().get('ir.model')
+        models = cls._get_origin()
+        models = Model.search([
+            ('model', 'in', models),
+        ])
+        return [(None, '')] + [(m.model, m.name) for m in models]
+
+
+class CarrierService(ModelSQL, ModelView):
+    "Carrier Services"
+    __name__ = 'carrier.service'
+
+    active = fields.Boolean("Active", select=True)
+    provider = fields.Selection([], "Provider", required=True, select=True)
+    name = fields.Char("Name", required=True, select=True)
+    code = fields.Char("Code", required=True, select=True)
+    box_types = fields.Function(
+        fields.One2Many('shipment.box_types', None, "Box Types"),
+        'get_box_types'
+    )
+
+    def get_box_types(self, name):
+        BoxTypes = Pool().get('shipment.box_types')
+
+        return map(int, BoxTypes.search([('provider', '=', self.provider)]))
+
+    @classmethod
+    def __setup__(cls):
+        super(CarrierService, cls).__setup__()
+
+        cls._sql_constraints += [
+            (
+                'provider_service_name_unique',
+                'UNIQUE(provider, name)',
+                'Service name is already in use for this carrier'
+            )
+        ]
+
+    @staticmethod
+    def default_active():
+        return True

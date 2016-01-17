@@ -59,6 +59,7 @@ class TestShipping(unittest.TestCase):
         self.StockLocation = POOL.get('stock.location')
         self.Package = POOL.get('stock.package')
         self.PackageType = POOL.get('stock.package.type')
+        self.Tracking = POOL.get('shipment.tracking')
 
     def setup_defaults(self):
         """
@@ -844,6 +845,92 @@ class TestShipping(unittest.TestCase):
                 # equally
                 self.assertEqual(package1.override_weight, 4.0)
                 self.assertEqual(package2.override_weight, 4.0)
+
+            # CASE 3: override_weight in wizard is None
+            with Transaction().set_context(
+                    active_id=sale.shipments[0], company=self.company.id
+            ):
+                session_id, start_state, end_state = self.LabelWizard.create()
+
+                data = {
+                    start_state: {
+                        'carrier': self.carrier,
+                        'shipment': sale.shipments[0],
+                        'override_weight': None,
+                    },
+                }
+
+                # As override weight in wizard is None, it shouldn't continue
+                self.LabelWizard.execute(
+                    session_id, data, 'next'
+                )
+
+    def test_0055_shipment_tracking_number(self):
+        """
+        Check tracking number for shipment and packages
+        """
+        with Transaction().start(DB_NAME, USER, context=CONTEXT):
+            self.setup_defaults()
+            with Transaction().set_context({'company': self.company.id}):
+                shipment, = self.Shipment.create([{
+                    'planned_date': date.today(),
+                    'effective_date': date.today(),
+                    'customer': self.sale_party.id,
+                    'warehouse': self.StockLocation.search([
+                        ('type', '=', 'warehouse')
+                    ])[0],
+                    'delivery_address': self.sale_party.addresses[0],
+                }])
+                package1, = self.Package.create([{
+                    'code': 'Package 1',
+                    'shipment': '%s,%d' % (shipment.__name__, shipment.id)
+                }])
+
+                package2, = self.Package.create([{
+                    'code': 'Package 2',
+                    'shipment': '%s,%d' % (shipment.__name__, shipment.id)
+                }])
+
+                # Master tracking number
+                tracking_number_master, = self.Tracking.create([{
+                    'carrier': self.carrier,
+                    'tracking_number': 'AA1234',
+                    'tracking_url': 'url',
+                    'origin': '%s,%d' % (package1.__name__, package1.id),
+                    'is_master': True,
+                }])
+
+                # Non master tracking number
+                tracking_number_non_master, = self.Tracking.create([{
+                    'carrier': self.carrier,
+                    'tracking_number': 'AA1234',
+                    'tracking_url': 'url',
+                    'origin': '%s,%d' % (package2.__name__, package2.id)
+                }])
+                self.assertEqual(
+                    package1.tracking_number, tracking_number_master
+                )
+
+                self.assertEqual(
+                    package2.tracking_number, tracking_number_non_master
+                )
+
+                # Only master tracking number must be used by shipment
+                self.assertEqual(
+                    shipment.tracking_number, tracking_number_master
+                )
+                self.assertEqual(
+                    package1.tracking_number, shipment.tracking_number
+                )
+
+                self.assertEqual(
+                    self.Package.search([('tracking_number', '=', 'AA1234')]),
+                    [package1, package2]
+                )
+                self.assertEqual(
+                    self.Shipment.search([('tracking_number', '=', 'AA1234')]),
+                    [shipment]
+                )
 
 
 def suite():
