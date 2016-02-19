@@ -2,10 +2,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:carrier.service:"
-msgid "Service name is already in use for this carrier"
-msgstr "Dienstname schon verwendet für diesen Frachtführer"
-
 msgctxt "error:party.address.validation:"
 msgid "Please fill out the address completely before attempting validation."
 msgstr "Die Adresse muss komplett ausgefüllt sein für die Validierung."
@@ -17,10 +13,6 @@ msgstr "Gewicht fehlt für Artikel %s"
 msgctxt "error:sale.sale:"
 msgid "Warehouse address is missing"
 msgstr "Fehlende Warenlageradresse"
-
-msgctxt "error:shipment.box_types:"
-msgid "Box Type with this code already exists."
-msgstr "Ein Behältnistyp mit diesem Code existiert bereits."
 
 msgctxt "error:shipping.label:"
 msgid ""
@@ -75,13 +67,137 @@ msgctxt "error:stock.shipment.out:"
 msgid "Warehouse address is missing"
 msgstr "Fehlende Warenlageradresse"
 
+msgctxt "field:carrier,active:"
+msgid "Active?"
+msgstr "Aktiv"
+
+msgctxt "field:carrier,box_types:"
+msgid "Box Types"
+msgstr "Behältnistypen"
+
 msgctxt "field:carrier,currency:"
 msgid "Currency"
 msgstr "Währung"
 
-msgctxt "field:carrier,tracking_numbers:"
-msgid "Tracking Numbers"
-msgstr "Sendungsnummern"
+msgctxt "field:carrier,services:"
+msgid "Services"
+msgstr "Dienste"
+
+msgctxt "field:carrier.box_type,carrier_cost_method:"
+msgid "Carrier Cost Method"
+msgstr "Frachtführer Kostenmethode"
+
+msgctxt "field:carrier.box_type,code:"
+msgid "Code"
+msgstr "Code"
+
+msgctxt "field:carrier.box_type,create_date:"
+msgid "Create Date"
+msgstr "Erstellungsdatum"
+
+msgctxt "field:carrier.box_type,create_uid:"
+msgid "Create User"
+msgstr "Erstellt durch"
+
+msgctxt "field:carrier.box_type,distance_unit:"
+msgid "Distance Unit"
+msgstr "Abmessungseinheit"
+
+msgctxt "field:carrier.box_type,height:"
+msgid "Height"
+msgstr "Höhe"
+
+msgctxt "field:carrier.box_type,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:carrier.box_type,length:"
+msgid "Length"
+msgstr "Länge"
+
+msgctxt "field:carrier.box_type,name:"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "field:carrier.box_type,rec_name:"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "field:carrier.box_type,width:"
+msgid "Width"
+msgstr "Breite"
+
+msgctxt "field:carrier.box_type,write_date:"
+msgid "Write Date"
+msgstr "Zuletzt geändert"
+
+msgctxt "field:carrier.box_type,write_uid:"
+msgid "Write User"
+msgstr "Letzte Änderung durch"
+
+msgctxt "field:carrier.carrier-box-type,box_type:"
+msgid "Box Type"
+msgstr "Behältnistyp"
+
+msgctxt "field:carrier.carrier-box-type,carrier:"
+msgid "Carrier"
+msgstr "Frachtführer"
+
+msgctxt "field:carrier.carrier-box-type,create_date:"
+msgid "Create Date"
+msgstr "Erstellungsdatum"
+
+msgctxt "field:carrier.carrier-box-type,create_uid:"
+msgid "Create User"
+msgstr "Erstellt durch"
+
+msgctxt "field:carrier.carrier-box-type,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:carrier.carrier-box-type,rec_name:"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "field:carrier.carrier-box-type,write_date:"
+msgid "Write Date"
+msgstr "Zuletzt geändert"
+
+msgctxt "field:carrier.carrier-box-type,write_uid:"
+msgid "Write User"
+msgstr "Letzte Änderung durch"
+
+msgctxt "field:carrier.carrier-service,carrier:"
+msgid "Carrier"
+msgstr "Frachtführer"
+
+msgctxt "field:carrier.carrier-service,create_date:"
+msgid "Create Date"
+msgstr "Erstellungsdatum"
+
+msgctxt "field:carrier.carrier-service,create_uid:"
+msgid "Create User"
+msgstr "Erstellt durch"
+
+msgctxt "field:carrier.carrier-service,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:carrier.carrier-service,rec_name:"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "field:carrier.carrier-service,service:"
+msgid "Service"
+msgstr "Dienstleistung"
+
+msgctxt "field:carrier.carrier-service,write_date:"
+msgid "Write Date"
+msgstr "Zuletzt geändert"
+
+msgctxt "field:carrier.carrier-service,write_uid:"
+msgid "Write User"
+msgstr "Letzte Änderung durch"
 
 msgctxt "field:carrier.log,carrier:"
 msgid "Carrier"
@@ -123,13 +239,9 @@ msgctxt "field:carrier.log,write_uid:"
 msgid "Write User"
 msgstr "Letzte Änderung durch"
 
-msgctxt "field:carrier.service,active:"
-msgid "Active"
-msgstr "Aktiv"
-
-msgctxt "field:carrier.service,box_types:"
-msgid "Box Types"
-msgstr "Behältnistypen"
+msgctxt "field:carrier.service,carrier_cost_method:"
+msgid "Carrier Cost Method"
+msgstr "Frachtführer Kostenmethode"
 
 msgctxt "field:carrier.service,code:"
 msgid "Code"
@@ -150,10 +262,6 @@ msgstr "ID"
 msgctxt "field:carrier.service,name:"
 msgid "Name"
 msgstr "Name"
-
-msgctxt "field:carrier.service,provider:"
-msgid "Provider"
-msgstr "Anbieter"
 
 msgctxt "field:carrier.service,rec_name:"
 msgid "Name"
@@ -227,6 +335,14 @@ msgctxt "field:party.configuration,default_validation_carrier:"
 msgid "Default Validation Carrier"
 msgstr "Standardvalidierungsfrachtführer"
 
+msgctxt "field:sale.sale,available_carrier_services:"
+msgid "Available Carrier Services"
+msgstr "Verfügbare Dienste"
+
+msgctxt "field:sale.sale,carrier_cost_method:"
+msgid "Carrier Cost Method"
+msgstr "Frachtführer Kostenmethode"
+
 msgctxt "field:sale.sale,carrier_service:"
 msgid "Carrier Service"
 msgstr "Versanddienstleistung"
@@ -235,13 +351,9 @@ msgctxt "field:sale.sale,is_international_shipping:"
 msgid "Is International Shipping"
 msgstr "Internationaler Versand"
 
-msgctxt "field:sale.sale,package_weight:"
-msgid "Package weight"
-msgstr "Paketgewicht"
-
-msgctxt "field:sale.sale,total_weight:"
-msgid "Total weight"
-msgstr "Gesamtgewicht"
+msgctxt "field:sale.sale,weight:"
+msgid "Weight"
+msgstr "Gewicht"
 
 msgctxt "field:sale.sale,weight_digits:"
 msgid "Weight Digits"
@@ -250,58 +362,6 @@ msgstr "Nachkommastellen Gewicht"
 msgctxt "field:sale.sale,weight_uom:"
 msgid "Weight UOM"
 msgstr "Maßeinheit Gewicht"
-
-msgctxt "field:shipment.box_types,code:"
-msgid "Code"
-msgstr "Code"
-
-msgctxt "field:shipment.box_types,create_date:"
-msgid "Create Date"
-msgstr "Erstellungsdatum"
-
-msgctxt "field:shipment.box_types,create_uid:"
-msgid "Create User"
-msgstr "Erstellt durch"
-
-msgctxt "field:shipment.box_types,distance_unit:"
-msgid "Distance Unit"
-msgstr "Abmessungseinheit"
-
-msgctxt "field:shipment.box_types,height:"
-msgid "Height"
-msgstr "Höhe"
-
-msgctxt "field:shipment.box_types,id:"
-msgid "ID"
-msgstr "ID"
-
-msgctxt "field:shipment.box_types,length:"
-msgid "Length"
-msgstr "Länge"
-
-msgctxt "field:shipment.box_types,name:"
-msgid "Name"
-msgstr "Name"
-
-msgctxt "field:shipment.box_types,provider:"
-msgid "Provider"
-msgstr "Anbieter"
-
-msgctxt "field:shipment.box_types,rec_name:"
-msgid "Name"
-msgstr "Name"
-
-msgctxt "field:shipment.box_types,width:"
-msgid "Width"
-msgstr "Breite"
-
-msgctxt "field:shipment.box_types,write_date:"
-msgid "Write Date"
-msgstr "Zuletzt geändert"
-
-msgctxt "field:shipment.box_types,write_uid:"
-msgid "Write User"
-msgstr "Letzte Änderung durch"
 
 msgctxt "field:shipment.tracking,carrier:"
 msgid "Carrier"
@@ -383,9 +443,25 @@ msgctxt "field:shipping.label.no_modules,no_module_msg:"
 msgid "Message"
 msgstr "Nachricht"
 
+msgctxt "field:shipping.label.start,available_box_types:"
+msgid "Available Box Types"
+msgstr "Verfügbare Behältnistypen"
+
+msgctxt "field:shipping.label.start,available_carrier_services:"
+msgid "Available Carrier Services"
+msgstr "Verfügbare Dienste"
+
+msgctxt "field:shipping.label.start,box_type:"
+msgid "Box Type"
+msgstr "Behältnistyp"
+
 msgctxt "field:shipping.label.start,carrier:"
 msgid "Carrier"
 msgstr "Frachtführer"
+
+msgctxt "field:shipping.label.start,carrier_service:"
+msgid "Carrier Service"
+msgstr "Versanddienstleistung"
 
 msgctxt "field:shipping.label.start,id:"
 msgid "ID"
@@ -399,13 +475,13 @@ msgctxt "field:shipping.label.start,override_weight:"
 msgid "Override Weight"
 msgstr "Korrekturgewicht"
 
-msgctxt "field:shipping.label.start,shipment:"
-msgid "Shipment"
-msgstr "Lieferposten"
-
 msgctxt "field:shipping.label.start,shipping_instructions:"
 msgid "Shipping Instructions"
 msgstr "Versandanweisungen"
+
+msgctxt "field:stock.package,available_box_types:"
+msgid "Available Box Types"
+msgstr "Verfügbare Behältnistypen"
 
 msgctxt "field:stock.package,box_type:"
 msgid "Box Types"
@@ -451,6 +527,14 @@ msgctxt "field:stock.package,width:"
 msgid "Width"
 msgstr "Breite"
 
+msgctxt "field:stock.shipment.out,available_carrier_services:"
+msgid "Available Carrier Services"
+msgstr "Verfügbare Dienste"
+
+msgctxt "field:stock.shipment.out,carrier_cost_method:"
+msgid "Carrier Cost Method"
+msgstr "Frachtführer Kostenmethode"
+
 msgctxt "field:stock.shipment.out,carrier_service:"
 msgid "Carrier Service"
 msgstr "Versanddienstleistung"
@@ -467,10 +551,6 @@ msgctxt "field:stock.shipment.out,tracking_number:"
 msgid "Tracking Number"
 msgstr "Trackingnummer"
 
-msgctxt "field:stock.shipment.out,tracking_url:"
-msgid "Tracking Url"
-msgstr "Tracking URL"
-
 msgctxt "field:stock.shipment.out,weight:"
 msgid "Weight"
 msgstr "Gewicht"
@@ -483,13 +563,25 @@ msgctxt "field:stock.shipment.out,weight_uom:"
 msgid "Weight UOM"
 msgstr "Maßeinheit Gewicht"
 
+msgctxt "model:carrier.box_type,name:"
+msgid "Carrier Box Type"
+msgstr "Behältnistyp"
+
+msgctxt "model:carrier.carrier-box-type,name:"
+msgid "Carrier - Box Type"
+msgstr "Frachtführer - Behältnistyp"
+
+msgctxt "model:carrier.carrier-service,name:"
+msgid "Carrier - Service"
+msgstr "Frachtführer - Dienstleistung"
+
 msgctxt "model:carrier.log,name:"
 msgid "Carrier Log"
 msgstr "Frachtführer Log"
 
 msgctxt "model:carrier.service,name:"
-msgid "Carrier Services"
-msgstr "Versanddienstleistungen"
+msgid "Carrier Service"
+msgstr "Versanddienstleistung"
 
 msgctxt "model:ir.action,name:"
 msgid "Configuration"
@@ -511,15 +603,9 @@ msgctxt "model:ir.action,name:wizard_generate_shipping_label"
 msgid "Generate Shipment Label"
 msgstr "Versandetikett erstellen"
 
-msgctxt ""
-"model:ir.action.act_window.domain,name:act_service_form_domain_active"
+msgctxt "model:ir.action.act_window.domain,name:"
 msgid "Active"
 msgstr "Aktiv"
-
-msgctxt ""
-"model:ir.action.act_window.domain,name:act_service_form_domain_non_active"
-msgid "Disabled"
-msgstr "Deaktiviert"
 
 msgctxt "model:ir.cron,name:cron_refresh_tracking_numbers"
 msgid "Refresh Tracking Numbers"
@@ -545,17 +631,13 @@ msgctxt "model:party.address.validation.start,name:"
 msgid "Address Validation Wizard Suggestion View"
 msgstr "Adressvalidierung Vorschlag"
 
-msgctxt "model:shipment.box_types,name:"
-msgid "Parcel Box Type"
-msgstr "Versandbehältnistyp"
-
 msgctxt "model:shipment.tracking,name:"
 msgid "Shipment Tracking"
 msgstr "Sendungsverfolgung"
 
 msgctxt "model:shipping.label.end,name:"
-msgid "Generate UPS Labels Message"
-msgstr "Nachricht für UPS-Etikett erstellen"
+msgid "Generate Labels Message"
+msgstr "Nachricht für Etikett erstellen"
 
 msgctxt "model:shipping.label.no_modules,name:"
 msgid "Wizard State for No Modules"
@@ -565,7 +647,7 @@ msgctxt "model:shipping.label.start,name:"
 msgid "View To Select Carrier"
 msgstr "Frachtführer Auswahl"
 
-msgctxt "selection:shipment.box_types,provider:"
+msgctxt "selection:carrier.box_type,carrier_cost_method:"
 msgid ""
 msgstr ""
 
@@ -597,6 +679,14 @@ msgctxt "selection:shipment.tracking,state:"
 msgid "Waiting"
 msgstr "Wartend"
 
+msgctxt "view:carrier.box_type:"
+msgid "Dimensions"
+msgstr "Abmessungen"
+
+msgctxt "view:carrier.box_type:"
+msgid "Shipping Box Type"
+msgstr "Behältnistyp"
+
 msgctxt "view:carrier.service:"
 msgid "Carrier Service"
 msgstr "Versanddienstleistung"
@@ -606,8 +696,12 @@ msgid "Carrier Services"
 msgstr "Versanddienstleistungen"
 
 msgctxt "view:carrier:"
-msgid "Tracking Numbers"
-msgstr "Sendungsnummern"
+msgid "Box Types"
+msgstr "Behältnistypen"
+
+msgctxt "view:carrier:"
+msgid "Services"
+msgstr "Dienste"
 
 msgctxt "view:party.address.validation.end:"
 msgid "Address Validation Complete"
@@ -624,14 +718,6 @@ msgstr "Adresse validieren"
 msgctxt "view:sale.sale:"
 msgid "Carrier Details"
 msgstr "Frachtführer Details"
-
-msgctxt "view:shipment.box_types:"
-msgid "Dimensions"
-msgstr "Abmessungen"
-
-msgctxt "view:shipment.box_types:"
-msgid "Shipping Box Type"
-msgstr "Behältnistyp"
 
 msgctxt "view:shipment.tracking:"
 msgid "Cancel Tracking Number"
@@ -678,8 +764,8 @@ msgid "Weight Details"
 msgstr "Gewicht Details"
 
 msgctxt "view:stock.shipment.out:"
-msgid "Carrier Details"
-msgstr "Frachtführer Details"
+msgid "Carrier"
+msgstr "Frachtführer"
 
 msgctxt "view:stock.shipment.out:"
 msgid "Generate shipping label"
