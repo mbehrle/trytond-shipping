@@ -2,6 +2,6 @@
 <tree string="Manifest">
     <field name="carrier"/>
     <field name="warehouse"/>
-    <field name="close_date"/>
+    <field name="close_date" widget="date"/>
     <field name="state"/>
 </tree>
