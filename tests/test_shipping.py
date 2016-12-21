@@ -663,12 +663,31 @@ class TestShipping(unittest.TestCase):
                 'unit': product.template.default_uom,
             }])
 
-        with Transaction().set_context(sale._get_carrier_context()):
-            sale.add_shipping_line(
-                sale.carrier.get_sale_price()[0],
-                sale.carrier.party.name
-            )
+        # add a shipping line for 1
+        sale.add_shipping_line(Decimal('1'), 'Rate 1')
         self.assertEqual(len(sale.lines), 2)
+        self.assertEqual(sale.total_amount, Decimal('11'))
+
+        # Appy again and the line should still be the same
+        sale.add_shipping_line(Decimal('2'), 'Rate 2')
+        self.assertEqual(len(sale.lines), 2)
+        self.assertEqual(sale.total_amount, Decimal('12'))
+
+        # Apply shipping in quote state
+        self.Sale.quote([sale])
+        self.assertEqual(len(sale.lines), 2)
+        self.assertEqual(sale.total_amount, Decimal('20'))
+        sale.add_shipping_line(Decimal('3'), 'Rate 3')
+        self.assertEqual(len(sale.lines), 2)
+        self.assertEqual(sale.total_amount, Decimal('13'))
+
+        # Apply shipping in confirmed state
+        self.Sale.confirm([sale])
+        self.assertEqual(len(sale.lines), 2)
+        self.assertEqual(sale.total_amount, Decimal('13'))
+        sale.add_shipping_line(Decimal('4'), 'Rate 4')
+        self.assertEqual(len(sale.lines), 2)
+        self.assertEqual(sale.total_amount, Decimal('14'))
 
     @with_transaction()
     def test_0045_check_shipment_tracking_number_copy(self):
@@ -778,11 +797,14 @@ class TestShipping(unittest.TestCase):
         # Check weight of packages before execution
         # of wizard.
         self.assertEqual(package1.override_weight, 3.0)
+        self.assertEqual(package1.weight_uom, self.uom_pound)
         self.assertEqual(package2.override_weight, 4.0)
+        self.assertEqual(package2.weight_uom, self.uom_pound)
 
         # Also check total weight of shipment which must be sum
-        # of weight of both packages. 3 + 7 =10 kg = 22.04 Pounds
-        self.assertEqual(shipment.weight, 22.04)
+        # of weight of both packages. 3 + 4 = 7 pound
+        self.assertEqual(shipment.weight, 7)
+        self.assertEqual(shipment.weight_uom, self.uom_pound)
 
         # CASE 1: default override_weight = override_weight of wizard
         with Transaction().set_context(
@@ -936,6 +958,7 @@ def suite():
         unittest.TestLoader().loadTestsFromTestCase(TestShipping)
     )
     return test_suite
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner(verbosity=2).run(suite())

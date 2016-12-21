@@ -158,8 +158,16 @@ class Sale:
                     line for line in self.lines
                     if line.shipment_cost is not None
                 ]),
-            ]
+            ],
+            # reset the amount caches or function
+            # fields will continue to return cached values
+            'untaxed_amount_cache': None,
+            'tax_amount_cache': None,
+            'total_amount_cache': None,
         })
+        # reset the order total cache
+        if self.state not in ('draft', 'quote'):
+            Sale.store_cache([self])
 
     def _get_shipping_line(self, shipment_cost, description):
         """
@@ -288,21 +296,16 @@ class Sale:
         return []
 
     def create_shipment(self, shipment_type):
-        Shipment = Pool().get('stock.shipment.out')
-
         with Transaction().set_context(ignore_carrier_computation=True):
             shipments = super(Sale, self).create_shipment(shipment_type)
 
         if shipment_type == 'out' and shipments:
             for shipment in shipments:
-                write_vals = {}
-
-                if self.carrier:
-                    write_vals['carrier'] = self.carrier.id
-                    if self.carrier_service:
-                        write_vals['carrier_service'] = self.carrier_service.id
-
-                Shipment.write([shipment], write_vals)
+                shipment.carrier = shipment.carrier or self.carrier
+                if shipment.carrier:
+                    shipment.carrier_service = shipment.carrier_service or \
+                        self.carrier_service
+                shipment.save()
 
         return shipments
 
