@@ -257,7 +257,10 @@ class Sale:
         Currency = Pool().get('currency.currency')
 
         self.carrier = rate['carrier']
-        self.carrier_service = rate['carrier_service']
+        if rate['carrier_service'].id is None:
+                self.carrier_service = None
+        else:
+            self.carrier_service = rate['carrier_service']
         self.save()
 
         shipment_cost = rate['cost_currency'].round(rate['cost'])
