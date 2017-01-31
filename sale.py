@@ -42,10 +42,25 @@ class Sale:
         fields.Integer('Weight Digits'), 'on_change_with_weight_digits'
     )
 
+    volume = fields.Function(
+        fields.Float(
+            "Volume", digits=(16, Eval('volume_digits', 2)),
+            depends=['volume_digits'],
+        ),
+        'get_volume'
+    )
+    volume_uom = fields.Function(
+        fields.Many2One('product.uom', 'Volume UOM'),
+        'get_volume_uom'
+    )
+    volume_digits = fields.Function(
+        fields.Integer('Weight Digits'), 'on_change_with_volume_digits'
+    )
     available_carrier_services = fields.Function(
         fields.One2Many("carrier.service", None, 'Available Carrier Services'),
         getter="on_change_with_available_carrier_services"
     )
+
     carrier_service = fields.Many2One(
         "carrier.service", "Carrier Service", domain=[
             ('id', 'in', Eval('available_carrier_services'))
@@ -116,6 +131,29 @@ class Sale:
         """
         return sum(map(
             lambda line: line.get_weight(self.weight_uom, silent=True),
+            self.lines
+        ))
+
+    @fields.depends('volume_uom')
+    def on_change_with_volume_digits(self, name=None):
+        if self.volume_uom:
+            return self.volume_uom.digits
+        return 2
+
+    def get_volume_uom(self, name):
+        """
+        Returns volume uom for the sale
+        """
+        ModelData = Pool().get('ir.model.data')
+
+        return ModelData.get_id('product', 'uom_liter')
+
+    def get_volume(self, name):
+        """
+        Returns sum of volume associated with each line
+        """
+        return sum(map(
+            lambda line: line.get_volume(self.volume_uom, silent=True),
             self.lines
         ))
 
@@ -366,6 +404,51 @@ class SaleLine:
 
         return weight
 
+    def get_volume(self, volume_uom, silent=False):
+        """
+        Returns volume as required for carriers
+
+        :param volume_uom: Weight uom used by carriers
+        :param silent: Raise error if not silent
+        """
+        ProductUom = Pool().get('product.uom')
+
+        if not self.product or self.quantity <= 0 or \
+                self.product.type == 'service':
+            return 0
+
+        if not self.product.volume:
+            if silent:
+                return 0
+            self.raise_user_error(
+                'volume_required',
+                error_args=(self.product.name,)
+            )
+
+        # Find the quantity in the default uom of the product as the volume
+        # is for per unit in that uom
+        if self.unit != self.product.default_uom:
+            quantity = ProductUom.compute_qty(
+                self.unit,
+                self.quantity,
+                self.product.default_uom
+            )
+        else:
+            quantity = self.quantity
+
+        volume = self.product.volume * quantity
+
+        # Compare product volume uom with the volume uom used by carrier
+        # and calculate volume if botth are not same
+        if self.product.volume_uom != volume_uom:
+            volume = ProductUom.compute_qty(
+                self.product.volume_uom,
+                volume,
+                volume_uom,
+            )
+
+        return volume
+
 
 class ReturnSale:
     __name__ = 'sale.return_sale'
@@ -397,6 +480,7 @@ class ApplyShippingStart(ModelView):
         ], depends=['available_carrier_services']
     )
     weight = fields.Float("Weight", required=True)
+    volume = fields.Float("Volume", required=True)
 
     @fields.depends("carrier")
     def on_change_with_available_carrier_services(self, name=None):
@@ -448,6 +532,7 @@ class ApplyShipping(Wizard):
             "carrier_service": self.sale.carrier_service and
             self.sale.carrier_service.id,
             "weight": self.sale.weight,
+            "volume": self.sale.volume,
         }
 
     @property

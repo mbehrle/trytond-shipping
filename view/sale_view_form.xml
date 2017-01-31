@@ -6,6 +6,10 @@
             <field name="weight"/>
             <label name="weight_uom"/>
             <field name="weight_uom"/>
+            <label name="volume"/>
+            <field name="volume"/>
+            <label name="volume_uom"/>
+            <field name="volume_uom"/>
         </page>
     </xpath>
     <xpath expr="//field[@name='carrier']" position="after">
