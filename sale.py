@@ -185,24 +185,18 @@ class Sale:
         a shipment_cost.
         :param shipment_cost: The shipment cost calculated according to carrier
         :param description: Shipping line description
+
+        MBS:
+            - Use sale_shipment_cost/set_shipment_cost instead of additional
+              custom method.
         """
         Sale = Pool().get('sale.sale')
 
-        Sale.write([self], {
-            'lines': [
-                ('create', [self._get_shipping_line(
-                                shipment_cost, description)]),
-                ('delete', [
-                    line for line in self.lines
-                    if line.shipment_cost is not None
-                ]),
-            ],
-            # reset the amount caches or function
-            # fields will continue to return cached values
-            'untaxed_amount_cache': None,
-            'tax_amount_cache': None,
-            'total_amount_cache': None,
-        })
+        self.untaxed_amount_cache = self.tax_amount_cache = \
+            self.total_amount_cache = None
+        self.set_shipment_cost()
+        self.save()
+
         # reset the order total cache
         if self.state not in ('draft', 'quote'):
             Sale.store_cache([self])
@@ -222,10 +216,10 @@ class Sale:
 
         return {
             'type': 'line',
-            'product': self.carrier.carrier_product.id,
+            'product': self.carrier.carrier_product,
             'description': description,
             'quantity': 1,  # XXX
-            'unit': self.carrier.carrier_product.sale_uom.id,
+            'unit': self.carrier.carrier_product.sale_uom,
             'unit_price': shipment_cost,
             'shipment_cost': shipment_cost,
             'amount': shipment_cost,
