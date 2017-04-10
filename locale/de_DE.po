@@ -607,6 +607,10 @@ msgctxt "field:stock.package,override_weight:"
 msgid "Override Weight"
 msgstr "Korrekturgewicht"
 
+msgctxt "field:stock.package,override_weight_uom:"
+msgid "Override Weight UOM"
+msgstr "Korrekturgewichtseinheit"
+
 msgctxt "field:stock.package,tracking_number:"
 msgid "Tracking Number"
 msgstr "Trackingnummer"
