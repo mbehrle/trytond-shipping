@@ -3,7 +3,11 @@
     shipment.py
 
 """
-import simplejson as json
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
 from decimal import Decimal
 
 from trytond.model import fields, ModelView

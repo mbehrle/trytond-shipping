@@ -85,7 +85,6 @@ minor_version = int(minor_version)
 
 requires = [
     "babel",
-    "simplejson"
 ]
 
 MODULE2PREFIX = {
