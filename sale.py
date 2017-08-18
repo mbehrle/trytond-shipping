@@ -178,7 +178,10 @@ class Sale:
             return self.raise_user_error('warehouse_address_missing')
         return self.warehouse and self.warehouse.address
 
-    def add_shipping_line(self, shipment_cost, description):
+    def add_shipping_line(
+            self, shipment_cost, description, carrier=None,
+            carrier_service=None
+    ):
         """
         This method takes shipping_cost and description as arguments and writes
         a shipping line. It deletes any previous shipping lines which have
@@ -263,7 +266,12 @@ class Sale:
                 rate['cost_currency'], shipment_cost, self.currency
             )
 
-        self.add_shipping_line(shipment_cost, rate['display_name'])
+        self.add_shipping_line(
+            shipment_cost,
+            rate['display_name'],
+            rate['carrier'],
+            rate['carrier_service'],
+        )
 
     def get_shipping_rates(self, carriers=None, silent=False):
         """
