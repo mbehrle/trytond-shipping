@@ -261,12 +261,24 @@ class Sale:
         Carrier = Pool().get('carrier')
         CarrierService = Pool().get('carrier.service')
 
-        self.carrier = Carrier(int(rate['carrier']))
-        self.carrier_service = CarrierService(int(rate['carrier_service'])) \
-            if rate['carrier_service'] else None
+        if isinstance(rate['carrier'], int):
+            self.carrier = Carrier(rate['carrier'])
+        else:
+            self.carrier = rate['carrier']
+        self.carrier_service = None
+        if rate['carrier_service']:
+            if isinstance(rate['carrier_service'], int):
+                self.carrier_service = CarrierService(rate['carrier_service'])
+            # If not int we should have got an instance of CarrierService, but
+            # it could be empty. So we check for id != None.
+            elif rate['carrier_service'].id:
+                self.carrier_service = rate['carrier_service']
         self.save()
 
-        cost_currency = Currency(int(rate['cost_currency']))
+        if isinstance(rate['cost_currency'], int):
+            cost_currency = Currency(rate['cost_currency'])
+        else:
+            cost_currency = rate['cost_currency']
         shipment_cost = cost_currency.round(rate['cost'])
         if self.currency != cost_currency:
             shipment_cost = Currency.compute(
