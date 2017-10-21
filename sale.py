@@ -133,10 +133,9 @@ class Sale:
         """
         Returns sum of weight associated with each line
         """
-        return sum(map(
-            lambda line: line.get_weight(self.weight_uom, silent=True),
-            self.lines
-        ))
+        return self.weight_uom.round(
+            sum(map(lambda line: line.get_weight(self.weight_uom, silent=True),
+                    self.lines)))
 
     @fields.depends('volume_uom')
     def on_change_with_volume_digits(self, name=None):
@@ -156,10 +155,9 @@ class Sale:
         """
         Returns sum of volume associated with each line
         """
-        return sum(map(
-            lambda line: line.get_volume(self.volume_uom, silent=True),
-            self.lines
-        ))
+        return self.volume_uom.round(
+            sum(map(lambda line: line.get_volume(self.volume_uom, silent=True),
+                    self.lines)))
 
     @fields.depends('party', 'shipment_address', 'warehouse')
     def on_change_with_is_international_shipping(self, name=None):
