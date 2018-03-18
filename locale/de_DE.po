@@ -801,7 +801,7 @@ msgstr "Frachtliste"
 
 msgctxt "selection:carrier.box_type,carrier_cost_method:"
 msgid ""
-msgstr " "
+msgstr ""
 
 msgctxt "selection:shipment.tracking,state:"
 msgid "Cancelled"
