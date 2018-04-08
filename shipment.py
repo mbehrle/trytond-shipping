@@ -32,7 +32,7 @@ class ShipmentOut(ShipmentCarrierMixin):
 
     @property
     def carrier_cost_moves(self):
-        return self.outgoing_moves
+        return filter(lambda m: m.state != 'cancel', self.outgoing_moves)
 
     def on_change_inventory_moves(self):
         with Transaction().set_context(ignore_carrier_computation=True):
@@ -49,10 +49,10 @@ class ShipmentOut(ShipmentCarrierMixin):
                 # No package, create a default package
                 package = Package()
                 package.shipment = shipment
-                package.moves = shipment.outgoing_moves
+                package.moves = shipment.carrier_cost_moves
                 package.save()
             else:
-                if (len(shipment.outgoing_moves) !=
+                if (len(filter(lambda m: m.state != 'cancel', shipment.outgoing_moves)) !=  # noqa
                         sum(len(p.moves) for p in shipment.packages)):
                     cls.raise_user_error(
                         "Not all the items are packaged for shipment #%s", (
@@ -68,7 +68,7 @@ class ShippingCarrierSelector(ModelView):
     override_weight = fields.Float("Override Weight", digits=(16, 2))
     no_of_packages = fields.Integer('Number of packages', readonly=True)
     box_type = fields.Many2One(
-        "carrier.box_type", "Box Type", required=True, domain=[
+        "carrier.box_type", "Box Type", domain=[
             ('id', 'in', Eval("available_box_types"))
         ], depends=["available_box_types"]
     )
@@ -260,7 +260,7 @@ class GenerateShippingLabel(Wizard):
             if per_package_weight:
                 package.override_weight = per_package_weight
                 package.override_weight_uom = shipment.weight_uom
-            if self.start.box_type != package.box_type:
+            if self.start.box_type and self.start.box_type != package.box_type:
                 package.box_type = self.start.box_type
             package.save()
 
