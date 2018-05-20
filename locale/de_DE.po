@@ -487,6 +487,14 @@ msgctxt "field:shipping.label.end,tracking_number:"
 msgid "Tracking number"
 msgstr "Trackingnummer"
 
+msgctxt "field:shipping.label.no_modules,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:shipping.label.no_modules,no_module_msg:"
+msgid "Message"
+msgstr "Nachricht"
+
 msgctxt "field:shipping.label.select_rate,id:"
 msgid "ID"
 msgstr "ID"
@@ -727,6 +735,10 @@ msgctxt "model:ir.action.act_window.domain,name:"
 msgid "Active"
 msgstr "Aktiv"
 
+msgctxt "model:ir.action.act_window.domain,name:"
+msgid "Disabled"
+msgstr "Aktiv"
+
 msgctxt "model:ir.action.act_window.domain,name:act_carrier_form_active"
 msgid "Active"
 msgstr "Aktiv"
@@ -786,6 +798,10 @@ msgstr "Sendungsverfolgung"
 msgctxt "model:shipping.label.end,name:"
 msgid "Generate Labels Message"
 msgstr "Nachricht für Etikett erstellen"
+
+msgctxt "model:shipping.label.no_modules,name:"
+msgid "Wizard State for No Modules"
+msgstr "Assistentenstatus für Keine Module"
 
 msgctxt "model:shipping.label.select_rate,name:"
 msgid "Select Shipping Rate"
@@ -1008,6 +1024,10 @@ msgid "Choose Rate"
 msgstr "Tarif auswählen"
 
 msgctxt "wizard_button:shipping.label,generate,end:"
+msgid "Ok"
+msgstr "OK"
+
+msgctxt "wizard_button:shipping.label,no_modules,end:"
 msgid "Ok"
 msgstr "OK"
 
