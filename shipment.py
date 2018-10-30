@@ -32,11 +32,25 @@ class ShipmentOut(ShipmentCarrierMixin):
 
     @property
     def carrier_cost_moves(self):
-        return filter(lambda m: m.state != 'cancel', self.outgoing_moves)
+        return filter(
+            lambda m: (m.state != 'cancel' and m.quantity), self.outgoing_moves
+        )
 
     def on_change_inventory_moves(self):
         with Transaction().set_context(ignore_carrier_computation=True):
             super(ShipmentOut, self).on_change_inventory_moves()
+
+    def get_weight(self, name=None):
+        if self.packages or (self.state in ('packed', 'done')):
+            return super(ShipmentOut, self).get_weight()
+
+        inventory_moves = filter(
+            lambda m: (m.state != 'cancel' and m.quantity), self.inventory_moves
+        )
+        return sum(map(
+            lambda move: move.get_weight(self.weight_uom, silent=True),
+            inventory_moves
+        ))
 
     @classmethod
     def pack(cls, shipments):
@@ -52,7 +66,7 @@ class ShipmentOut(ShipmentCarrierMixin):
                 package.moves = shipment.carrier_cost_moves
                 package.save()
             else:
-                if (len(filter(lambda m: m.state != 'cancel', shipment.outgoing_moves)) !=  # noqa
+                if (len(shipment.carrier_cost_moves) !=
                         sum(len(p.moves) for p in shipment.packages)):
                     cls.raise_user_error(
                         "Not all the items are packaged for shipment #%s", (
@@ -119,7 +133,7 @@ class SelectShippingRate(ModelView):
     'Select Shipping Rate'
     __name__ = 'shipping.label.select_rate'
 
-    rate = fields.Selection([], 'Rate')
+    rate = fields.Selection([], 'Select Rate')
 
 
 class GenerateShippingLabelMessage(ModelView):
@@ -303,6 +317,14 @@ class GenerateShippingLabel(Wizard):
         self.select_rate.__class__.rate.selection = result
 
         return 'select_rate'
+
+    def default_select_rate(self, field):
+        rate = None
+        if self.select_rate.__class__.rate.selection:
+            rate = self.select_rate.__class__.rate.selection[0][0]
+        return {
+            'rate': rate
+        }
 
     def transition_generate_labels(self):
         "Generates shipping labels from data provided by earlier states"
